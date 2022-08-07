@@ -42,12 +42,26 @@ public class ParkingController {
         return ResponseEntity.ok(result);       //retorno vai ser um ResponseEntity.ok (retorna código 200) com result como corpo
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable String id) {
+        parkingService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping
     public ResponseEntity<ParkingDTO> create(@RequestBody ParkingCreateDTO dto) {       //Recebe um objeto com menos informação (ParkingCreatedto) e retorna um objeto completo
         var parkingCreate = parkingMapper.toParkingCreate(dto);
         var parking = parkingService.create(parkingCreate);
         var result = parkingMapper.toParkingDTO(parking);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ParkingDTO> update(@PathVariable String id, @RequestBody ParkingCreateDTO dto) {       //Recebe um objeto com menos informação (ParkingCreatedto) e retorna um objeto completo
+        var parkingCreate = parkingMapper.toParkingCreate(dto);
+        var parking = parkingService.update(id, parkingCreate);
+        var result = parkingMapper.toParkingDTO(parking);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
 }
