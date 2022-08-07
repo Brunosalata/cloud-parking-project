@@ -2,13 +2,19 @@ package one.digitalinnovation.apiparkingcloud.config;
 
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Component;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.BasicAuth;
+import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 //@Component
 @EnableSwagger2
@@ -20,7 +26,19 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("one.digitalinnovation.apiparkingcloud"))
                 .build()
-                .apiInfo(metaData());
+                .apiInfo(metaData())
+                .securityContexts(Arrays.asList(getSecurityContext()))
+                .securitySchemes(Arrays.asList(basicAuthScheme()));
+    }
+
+    private SecurityContext getSecurityContext() {
+        return SecurityContext.builder()
+                .securityReferences(Arrays.asList(basicAuthReference()))
+                .build();
+    }
+
+    private SecurityScheme basicAuthScheme() {
+        return new BasicAuth("nasicAuth");
     }
 
     private ApiInfo metaData() {
