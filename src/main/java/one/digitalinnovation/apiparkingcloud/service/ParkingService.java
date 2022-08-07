@@ -60,4 +60,11 @@ public class ParkingService {
         parkingMap.replace(id, parking);
         return parking;
     }
+
+    public Parking exit(String id) {
+        Parking parking = findById(id);
+        parking.setExitDate(LocalDateTime.now());
+        parkingMap.put(id, parking);
+        return parking;
+    }
 }
