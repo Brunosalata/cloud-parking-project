@@ -1,7 +1,10 @@
 package one.digitalinnovation.apiparkingcloud.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.time.LocalDateTime;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)      //não apresenta valores que estejam nulos
 public class ParkingDTO {
 
     private String id;
