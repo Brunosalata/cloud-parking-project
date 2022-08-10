@@ -57,16 +57,16 @@ public class ParkingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ParkingDTO> update(@PathVariable String id, @RequestBody ParkingCreateDTO dto) {       //Recebe um objeto com menos informação (ParkingCreatedto) e retorna um objeto completo
-        var parkingCreate = parkingMapper.toParkingCreate(dto);
-        var parking = parkingService.update(id, parkingCreate);
-        var result = parkingMapper.toParkingDTO(parking);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+    public ResponseEntity<ParkingDTO> update(@PathVariable String id, @RequestBody ParkingCreateDTO parkingCreateDTO) {       //Recebe um objeto com menos informação (ParkingCreatedto) e retorna um objeto completo
+        Parking parkingUpdate = parkingMapper.toParkingCreate(parkingCreateDTO);
+        Parking parking  = parkingService.update(id, parkingUpdate);
+        return ResponseEntity.ok(parkingMapper.toParkingDTO(parking));
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<ParkingDTO> exit(@PathVariable String id) {
-        Parking parking = parkingService.exit(id);
+    public ResponseEntity<ParkingDTO> checkOut(@PathVariable String id) {
+        //TODO verificar se já não esta fechado e lançar exceção
+        Parking parking = parkingService.checkOut(id);
         return ResponseEntity.ok(parkingMapper.toParkingDTO(parking));
     }
 

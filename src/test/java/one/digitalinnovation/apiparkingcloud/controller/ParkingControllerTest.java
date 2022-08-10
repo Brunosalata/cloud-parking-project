@@ -1,6 +1,6 @@
 package one.digitalinnovation.apiparkingcloud.controller;
 
-import com.jayway.restassured.RestAssured;
+import io.restassured.RestAssured;
 import one.digitalinnovation.apiparkingcloud.controller.dto.ParkingCreateDTO;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +24,7 @@ class ParkingControllerTest extends AbstractContainerBase{
     @Test
     void whenFindAllThenCheckResult() {
         RestAssured.given()
-                .header("authorization", 123)
+                .auth().basic("user", "123")
                 .when()
                 .get("/parking")
                 .then()
@@ -42,8 +42,8 @@ class ParkingControllerTest extends AbstractContainerBase{
         createDTO.setState("SP");
 
         RestAssured.given()
-                .header("authorization", 123)
                 .when()
+                .auth().basic("user", "12345")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(createDTO)
                 .post("/parking")

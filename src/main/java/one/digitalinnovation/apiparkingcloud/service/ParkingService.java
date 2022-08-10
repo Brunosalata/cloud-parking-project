@@ -2,23 +2,24 @@ package one.digitalinnovation.apiparkingcloud.service;
 
 import one.digitalinnovation.apiparkingcloud.exception.ParkingNotFoundException;
 import one.digitalinnovation.apiparkingcloud.model.Parking;
+import one.digitalinnovation.apiparkingcloud.repository.ParkingRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ParkingService {
 
     private final ParkingRepository parkingRepository;
 
-    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+    public ParkingService(ParkingRepository parkingRepository) {
+        this.parkingRepository = parkingRepository;
+    }
+
+    @Transactional(readOnly = true)
     public List<Parking> findAll() {
         return parkingRepository.findAll();
     }
@@ -27,10 +28,10 @@ public class ParkingService {
         return UUID.randomUUID().toString().replace("-", ""); //pega o UUID do Java, converte para String e troca hifem por vazio
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Parking findById(String id) {
-        return parkingRepository.findById(id).orElseThrow(() ->
-                new ParkingNotFoundException(id));
+        return parkingRepository.findById(id).orElseThrow(
+                () -> new ParkingNotFoundException(id));
     }
 
     @Transactional
@@ -52,8 +53,8 @@ public class ParkingService {
     public Parking update(String id, Parking parkingCreate) {
         Parking parking = findById(id);
         parking.setColor(parkingCreate.getColor());
-        parking.setModel(parkingCreate.getModel());
         parking.setState(parkingCreate.getState());
+        parking.setModel(parkingCreate.getModel());
         parking.setLicense(parkingCreate.getLicense());
         parkingRepository.save(parking);
         return parking;
@@ -64,7 +65,6 @@ public class ParkingService {
         Parking parking = findById(id);
         parking.setExitDate(LocalDateTime.now());
         parking.setBill(ParkingCheckOut.getBill(parking));
-        parkingRepository.save(parking);
-        return parking;
+        return parkingRepository.save(parking);
     }
 }
